@@ -1,0 +1,23 @@
+using com.softwareag.connectivity.ConnectivityPlugins;
+
+event Email {
+    string sender;
+    string receiver;
+    string cc;
+    string subject;
+    string message;
+    string attachment;
+}
+
+monitor ReceiveEmail
+{
+
+	action onload()
+	{
+		ConnectivityPlugins.onApplicationInitialized();
+		monitor.subscribe("emailChannel");
+        on all Email() as e {
+			log "Got Email: " + e.toString() at INFO;
+		}
+	}
+}

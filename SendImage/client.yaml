@@ -1,0 +1,36 @@
+
+connectivityPlugins:
+  httpClient:
+    libraryName: connectivity-http-client
+    class: HTTPClient
+  mapperCodec:
+    libraryName: MapperCodec
+    class: MapperCodec
+  loadImage:
+    libraryName: LoadImage
+    directory: ${PARENT_DIR}/Release
+    class: LoadImage
+  base64Codec:
+    libraryName: connectivity-base64-codec
+    class: Base64Codec
+startChains:
+  http:
+    - apama.eventMap
+    - mapperCodec:
+        EmailRequest:
+          towardsTransport:
+            mapFrom:
+              - metadata.http.path: payload.path
+              - metadata.requestId: payload.id
+              - metadata.http.method: payload.method
+              - metadata.contentType: payload.contentType
+              - payload: payload.data
+    - loadImage
+    - base64Codec:
+        eventTypes:
+          - EmailRequest
+        fields:
+          - payload.attachment
+    - httpClient:
+        host: localhost
+        port: ${httpServer.port}

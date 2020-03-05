@@ -1,0 +1,45 @@
+connectivityPlugins:
+  httpServer:
+    libraryName: connectivity-http-server
+    class: HTTPServer
+  stringCodec:
+    libraryName: connectivity-string-codec
+    class: StringCodec
+  mapperCodec:
+    libraryName: MapperCodec
+    class: MapperCodec
+  classifierCodec:
+    libraryName: ClassifierCodec
+    class: ClassifierCodec
+
+dynamicChainManagers:
+  httpServerManager:
+    transport: httpServer
+    managerConfig:
+      port: ${httpServer.port}
+      bindAddress: ""
+
+dynamicChains:
+  httpServer:
+    - apama.eventMap:
+        defaultEventType: KittenPrice
+        defaultChannel: price
+    - mapperCodec:
+        '*':
+          towardsHost:
+            mapFrom:
+              - payload.price: payload
+    - stringCodec:
+        encoding: latin_1
+        eventTypes:
+          - KittenPrice
+        fields:
+          - payload
+    - mapperCodec:
+        '*':
+          towardsHost:
+            defaultValue:
+              - metadata.sag.type: KittenPrice
+    - httpServer:
+        automaticResponses: true
+        allowedMethods: [post]

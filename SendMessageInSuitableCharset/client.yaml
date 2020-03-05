@@ -1,0 +1,30 @@
+connectivityPlugins:
+  httpClient:
+    libraryName: connectivity-http-client
+    class: HTTPClient
+  mapperCodec:
+    libraryName: MapperCodec
+    class: MapperCodec
+  stringCodec:
+      libraryName: connectivity-string-codec
+      class: StringCodec
+startChains:
+  http:
+    - apama.eventMap
+    - mapperCodec:
+        KittenPrice:
+          towardsTransport:
+            mapFrom:
+              - metadata.http.path: payload.path
+              - metadata.requestId: payload.id
+              - metadata.http.method: payload.method
+              - payload: payload.price
+    - stringCodec:
+        encoding: latin_1
+        eventTypes:
+          - KittenPrice
+        fields:
+          - payload
+    - httpClient:
+        host: localhost
+        port: ${httpServer.port}

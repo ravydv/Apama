@@ -1,0 +1,19 @@
+connectivityPlugins:
+  httpServer:
+    libraryName: connectivity-http-server
+    class: HTTPServer
+dynamicChainManagers:
+  httpServerManager:
+    transport: httpServer
+    managerConfig:
+      port: ${httpServer.port}
+      bindAddress: ""
+
+dynamicChains:
+  httpServer:
+    - apama.eventMap:
+        defaultEventType: Email
+        defaultChannel: emailChannel
+    - httpServer:
+        automaticResponses: true
+        allowedMethods: [post]

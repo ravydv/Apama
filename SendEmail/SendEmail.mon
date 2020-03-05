@@ -1,0 +1,37 @@
+using com.softwareag.connectivity.ConnectivityPlugins;
+
+event EmailRequest
+{
+	integer id;
+	string path;
+	dictionary<string, string> data;
+	string method;
+	string contentType;
+}
+
+monitor SendEmail
+{
+	string channel := "http";
+
+	action onload()
+	{
+		ConnectivityPlugins.onApplicationInitialized();
+		string sender:= "a@sag.com";
+		string receiver:= "b@sag.com,c@sag.com";
+		string cc:= "d@sag.com,e@sag.com";
+		string subject := "Fluffy Kitten";
+		string message := "Hello from Fluffy Kitten";
+		dictionary<string, string> data := {
+			"sender":sender,
+			"receiver":receiver,
+			"cc":cc,
+			"subject":subject,
+			"message":message
+		};
+		string contentTypeMultiPart := "multipart/form-data";
+		string method := "POST";
+		integer id := integer.getUnique();
+		send EmailRequest(id, "/", data, method,contentTypeMultiPart) to channel;
+	}
+}
+

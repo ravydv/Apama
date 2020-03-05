@@ -1,0 +1,19 @@
+using com.softwareag.connectivity.ConnectivityPlugins;
+
+event KittenPrice {
+    string price;
+}
+
+monitor Receiver
+{
+
+	action onload()
+	{
+		ConnectivityPlugins.onApplicationInitialized();
+		monitor.subscribe("price");
+		on all KittenPrice() as e {
+			log "Got kitten price: " + e.toString() at INFO;
+		}
+	}
+
+}

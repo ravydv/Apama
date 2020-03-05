@@ -1,0 +1,25 @@
+using com.softwareag.connectivity.ConnectivityPlugins;
+
+event KittenPrice
+{
+	integer id;
+	string path;
+	string price;
+	string method;
+}
+
+monitor Sender
+{
+	string channel := "http";
+
+	action onload()
+	{
+		ConnectivityPlugins.onApplicationInitialized();
+		string price := "Fluffy Kitten £240.30";
+		string method := "POST";
+		integer id := integer.getUnique();
+		send KittenPrice(id, "/", price, method) to channel;
+	}
+}
+
+

@@ -1,0 +1,23 @@
+
+connectivityPlugins:
+  httpClient:
+    libraryName: connectivity-http-client
+    class: HTTPClient
+  mapperCodec:
+    libraryName: MapperCodec
+    class: MapperCodec
+startChains:
+  http:
+    - apama.eventMap
+    - mapperCodec:
+        EmailRequest:
+          towardsTransport:
+            mapFrom:
+              - metadata.http.path: payload.path
+              - metadata.requestId: payload.id
+              - metadata.http.method: payload.method
+              - metadata.contentType: payload.contentType
+              - payload: payload.data
+    - httpClient:
+        host: localhost
+        port: ${httpServer.port}
